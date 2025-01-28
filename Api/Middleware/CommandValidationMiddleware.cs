@@ -19,7 +19,7 @@ public class CommandValidationMiddleware<TRequest, TResponse>
     private readonly IEnumerable<IValidator<TRequest>> _validators;
 
     /// <summary>
-    /// Contrutor
+    /// Constructor
     /// </summary>
     /// <param name="validators"></param>
     public CommandValidationMiddleware(IEnumerable<IValidator<TRequest>> validators)
@@ -39,7 +39,7 @@ public class CommandValidationMiddleware<TRequest, TResponse>
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        if (_validators is null || _validators.IsEmpty())
+        if (_validators.IsEmpty())
             return await next();
 
         var context = new ValidationContext<TRequest>(request);
@@ -60,8 +60,8 @@ public class CommandValidationMiddleware<TRequest, TResponse>
             return (dynamic) CommandResult<Guid>.ValidationFailure(errors);
         
         if (dataType == typeof(Guid))
-            return (dynamic) CommandResult<Guid>.ValidationFailure(errors);
-        
-throw new InvalidOperationException($"Unsupported type in validator: {dataType}");
+            return (dynamic)CommandResult<Guid>.ValidationFailure(errors);
+
+        throw new InvalidOperationException($"Unsupported type in validator: {dataType}");
     }
 }
