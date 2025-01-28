@@ -4,3 +4,8 @@
 \packages
 \*.suo
 
+/.idea
+/.idea/.idea.MyDiet
+.idea/.idea.MyDiet/.idea/.name
+/Api
+/Api/obj
