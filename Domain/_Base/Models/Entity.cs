@@ -9,20 +9,15 @@ public abstract class Entity
     
     public Guid Id { get; }
     
-    [Column("description", TypeName = "varchar(250)"), Required]
-    public string Description { get; set; }
+    [Column("created_at", TypeName = "datetime(6)"), Required]
+    public DateTime CreatedAt { get; set; }
     
-    [Column("data_registered", TypeName = "datetime(6)"), Required]
-    public DateTime DateRegistered { get; set; } = DateTime.Now;
+    [Column("created_by", TypeName = "varchar(250)")]
+    public string CreatedBy { get; private set; }
     
-    public override bool Equals(object obj)
-    {
-        var compareTo = obj as Entity;
-
-        if (ReferenceEquals(this, compareTo)) return true;
-
-        return compareTo is not null && Id.Equals(compareTo.Id);
-    }
+    [Column("updated_at", TypeName = "datetime(6)")]
+    public DateTime? UpdatedAt { get; set; }
     
-    public override int GetHashCode() => (GetType().GetHashCode() * 907) + Id.GetHashCode();
+    [Column("updated_by", TypeName = "varchar(250)")]
+    public string UpdatedBy { get; protected set; }
 }

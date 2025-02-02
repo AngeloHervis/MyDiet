@@ -10,14 +10,14 @@ public class SingletonLoggerWrapper(IServiceProvider serviceProvider) : ISinglet
     public void LogErro<TSource>(string message, Exception exception, [CallerMemberName] string sourceMethod = "")
     {
         using var scope = serviceProvider.CreateScope();
-        var scopedLogger = scope.ServiceProvider.GetRequiredService<ILoggerPadrao>();
-        scopedLogger.LogErro<TSource>(message, exception, sourceMethod);
+        var scopedLogger = scope.ServiceProvider.GetRequiredService<IStandardLogger>();
+        scopedLogger.LogError<TSource>(message, exception, sourceMethod);
     }
 
     public void LogInfoPadrao<TSource>(string message, [CallerMemberName] string sourceMethod = "")
     {
         using var scope = serviceProvider.CreateScope();
-        var scopedLogger = scope.ServiceProvider.GetRequiredService<ILoggerPadrao>();
-        scopedLogger.LogInfoPadrao<TSource>(message, sourceMethod);
+        var scopedLogger = scope.ServiceProvider.GetRequiredService<IStandardLogger>();
+        scopedLogger.LogStandardInfo<TSource>(message, sourceMethod);
     }
 }

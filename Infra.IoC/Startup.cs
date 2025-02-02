@@ -29,15 +29,15 @@ public static class Startup
         
         // Logging
         services
-            .AddScoped<ILoggerServicosDeDominio, LoggerServicosDeDominio>()
+            .AddScoped<ILoggerDomainServices, LoggerDomainServices>()
             .AddScoped<ISingletonLoggerWrapper, SingletonLoggerWrapper>()
-            .AddScoped<ILoggerPadrao, LoggerPadrao>()
-            .AddScoped<ILoggerServicosDeDominio, LoggerServicosDeDominio>()
+            .AddScoped<IStandardLogger, StandardLogger>()
+            .AddScoped<ILoggerDomainServices, LoggerDomainServices>()
             .AddScoped<ILogWriter, LogWriter>();
         
         // Configs
         services
-            .AddScoped<IErroDeDominioHandler, ErroDeDominioHandler>();
+            .AddScoped<IDomainErrorHandler, DomainErrorHandler>();
 
 
     }
