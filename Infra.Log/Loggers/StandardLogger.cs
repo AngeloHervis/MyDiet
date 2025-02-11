@@ -6,10 +6,8 @@ using Infra.Log.Interfaces;
 
 namespace Infra.Log.Loggers;
 
-public class StandardLogger : LoggerBase, IStandardLogger
+public class StandardLogger(ILogWriter logger) : LoggerBase(logger), IStandardLogger
 {
-    public StandardLogger(ILogWriter logger) : base(logger) { }
-
     public void LogWarning<TSource>(string message, [CallerMemberName] string sourceMethod = "")
         => LogInfo<TSource>(message, sourceMethod);
 

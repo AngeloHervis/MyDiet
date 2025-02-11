@@ -1,8 +1,14 @@
 using System.Reflection;
+using System.Text;
 using System.Text.Json.Serialization;
+using Domain.Autentication;
+using Infra.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
-using Infra.IoC;
+using Startup = Infra.IoC.Startup;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +24,35 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddIdentity<User, IdentityRole<Guid>>()
+    .AddEntityFrameworkStores<MyDietContext>()
+    .AddDefaultTokenProviders();
+
+
+var jwtSettings = builder.Configuration.GetSection("JwtSettings");
+var key = Encoding.UTF8.GetBytes(jwtSettings["Secret"]!);
+
+builder.Services.AddAuthentication(options =>
+    {
+        options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+        options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    })
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(key),
+            ValidateIssuer = true,
+            ValidIssuer = jwtSettings["Issuer"],
+            ValidateAudience = true,
+            ValidAudience = jwtSettings["Audience"],
+            ValidateLifetime = true,
+            ClockSkew = TimeSpan.Zero
+        };
+    });
+
+builder.Services.AddAuthorization();
 
 builder.Services.AddLogging(x => { x.AddConsole(); });
 
@@ -67,7 +102,7 @@ await Infra.Data.Startup.RunMigration(app);
 if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") != "Main")
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyDiet API"); });    
+    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/v1/swagger.json", "MyDiet API"); });
 }
 
 app.UseHttpsRedirection();

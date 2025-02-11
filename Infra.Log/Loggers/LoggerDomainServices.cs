@@ -6,11 +6,8 @@ using Infra.Log.Interfaces;
 
 namespace Infra.Log.Loggers;
 
-public class LoggerDomainServices : LoggerBase, ILoggerDomainServices
+public class LoggerDomainServices(ILogWriter logger) : LoggerBase(logger), ILoggerDomainServices
 {
-    public LoggerDomainServices(ILogWriter logger) : base(logger) 
-    { }
-
     public void LogInformation<TSource>(string message, [CallerMemberName] string sourceMethod = "")
         => LogInfo<TSource>(message, sourceMethod);
 
